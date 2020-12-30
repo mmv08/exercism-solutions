@@ -5,6 +5,8 @@ defmodule ListOps do
   # for adding numbers), but please do not use Kernel functions for Lists like
   # `++`, `--`, `hd`, `tl`, `in`, and `length`.
 
+  # thanks to https://exercism.io/tracks/elixir/exercises/list-ops/solutions/97a33c52be17493eb2914b712cf86f14
+
   def count([]), do: 0
   @spec count(list) :: non_neg_integer
   def count([_ | rest]), do: 1 + count(rest)
