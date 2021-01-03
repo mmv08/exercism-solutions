@@ -1,6 +1,4 @@
 defmodule BankAccount do
-  use Agent
-
   @moduledoc """
   A bank account that supports access from multiple processes.
   """
