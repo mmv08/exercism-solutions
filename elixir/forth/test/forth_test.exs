@@ -7,7 +7,7 @@ defmodule ForthTest do
     assert s == ""
   end
 
-  @tag :pending
+#  @tag :pending
   test "numbers just get pushed onto the stack" do
     s =
       Forth.new()

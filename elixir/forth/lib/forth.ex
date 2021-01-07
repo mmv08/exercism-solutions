@@ -1,18 +1,28 @@
 defmodule Forth do
-  @opaque evaluator :: any
+  @opaque evaluator :: %Forth{env: Map.t(), stack: List.t()}
+  defstruct env: %{}, stack: []
+  
+  @operators ["dup", "drop", "swap", "over", "+", "-", "*", "/"]
 
   @doc """
   Create a new evaluator.
   """
   @spec new() :: evaluator
-  def new() do
-  end
+  def new(), do: %Forth{}
 
   @doc """
   Evaluate an input string, updating the evaluator state.
   """
   @spec eval(evaluator, String.t()) :: evaluator
   def eval(ev, s) do
+  end
+  
+  @doc """
+  Splits input string with commands into tokens given into
+  account evaluator's environment
+  """
+  def tokenize(s, env) do
+    s |> String.split(~r"\W") |> proceed_tokens()
   end
 
   @doc """
@@ -21,6 +31,7 @@ defmodule Forth do
   """
   @spec format_stack(evaluator) :: String.t()
   def format_stack(ev) do
+    ev.stack |> Enum.reverse() |> Enum.join(" ")
   end
 
   defmodule StackUnderflow do
