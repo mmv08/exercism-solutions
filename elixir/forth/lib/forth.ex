@@ -1,7 +1,7 @@
 defmodule Forth do
   @opaque evaluator :: %Forth{env: Map.t(), stack: List.t()}
   defstruct env: %{}, stack: []
-  
+
   @operators ["dup", "drop", "swap", "over", "+", "-", "*", "/"]
 
   @doc """
@@ -15,14 +15,42 @@ defmodule Forth do
   """
   @spec eval(evaluator, String.t()) :: evaluator
   def eval(ev, s) do
+    s |> tokenize(ev.env) |> eval_tokens(ev)
   end
-  
+
   @doc """
   Splits input string with commands into tokens given into
   account evaluator's environment
   """
-  def tokenize(s, env) do
-    s |> String.split(~r"\W") |> proceed_tokens()
+  defp tokenize(s, env) do
+    s |> String.split(~r"\W") |> proceed_tokens(env)
+  end
+
+  @doc """
+  Proceeds tokens one by one
+  """
+  defp proceed_tokens([], _), do: []
+
+  defp proceed_tokens([token | rest], env) when token == ':' do
+  end
+
+  defp proceed_tokens([token | rest], env) do
+    [to_token_format(token) | proceed_tokens(rest, env)]
+  end
+
+  defp to_token_format(word) do
+    cond do
+      String.downcase(word) in @operators -> {:operator, String.downcase(word)}
+      is_string_integer?(word) -> {:integer, String.to_integer(word)}
+      true -> {:word, word}
+    end
+  end
+
+  @doc """
+  Checks if string is an integer
+  """
+  defp is_string_integer?(string) do
+    String.match?(string, ~r/^\d+$/)
   end
 
   @doc """
