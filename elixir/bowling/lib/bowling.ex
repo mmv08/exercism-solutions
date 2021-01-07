@@ -29,12 +29,16 @@ defmodule Bowling do
   @spec roll(game, integer) :: any | String.t()
   def roll(_, roll) when roll < 0, do: @negative_roll
   def roll(_, roll) when roll > @max_pins, do: @roll_exceeding_pin_count
+  # bonus roll for a spare
+  def roll([_, [last1, last2] | _] = game, _)
+      when length(game) == @frames_with_bonus_roll and last1 + last2 == @strike_points,
+      do: @game_over
 
   def roll([[last_roll] | _], roll)
       when last_roll < @strike_points and last_roll + roll > @spare_points,
       do: @roll_exceeding_pin_count
 
-  def roll([[last | last2] | _] = game, roll)
+  def roll([[last | last2] | _] = game, _)
       when length(game) >= @frames and last + hd(last2) != @spare_points,
       do: @game_over
 

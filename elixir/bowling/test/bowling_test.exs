@@ -9,7 +9,6 @@ defmodule BowlingTest do
     game = Bowling.start()
     rolls = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     game = roll_reduce(game, rolls)
-    IO.inspect(game)
     assert Bowling.score(game) == 0
   end
 
@@ -227,7 +226,6 @@ defmodule BowlingTest do
     game = Bowling.start()
     rolls = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 3, 2]
     game = roll_reduce(game, rolls)
-    IO.inspect(game)
     assert Bowling.roll(game, 2) == {:error, "Cannot roll after game is over"}
   end
 
