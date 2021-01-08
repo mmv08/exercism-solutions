@@ -15,7 +15,7 @@ defmodule Forth do
   """
   @spec eval(evaluator, String.t()) :: evaluator
   def eval(ev, s) do
-    s |> tokenize(ev.env) |> eval_tokens(ev)
+    s |> tokenize(ev.env) |> IO.inspect()
   end
 
   @doc """
@@ -23,7 +23,8 @@ defmodule Forth do
   account evaluator's environment
   """
   defp tokenize(s, env) do
-    s |> String.split(~r"\W") |> proceed_tokens(env)
+    # clean non-words
+    s |> String.replace(~r/[^\w\+-\\*\/]| /, " ") |> String.split() |> proceed_tokens(env)
   end
 
   @doc """
@@ -31,7 +32,9 @@ defmodule Forth do
   """
   defp proceed_tokens([], _), do: []
 
-  defp proceed_tokens([token | rest], env) when token == ':' do
+  defp proceed_tokens([token | rest] = s, env) when token == ":" do
+    {d, t} = parse_definition_string(tl(rest), [])
+    [{:define, hd(rest), d} | proceed_tokens(t, env)]
   end
 
   defp proceed_tokens([token | rest], env) do
@@ -44,6 +47,15 @@ defmodule Forth do
       is_string_integer?(word) -> {:integer, String.to_integer(word)}
       true -> {:word, word}
     end
+  end
+
+  @doc """
+  Parses string of format ": word-name definition ;"
+  """
+  defp parse_definition_string([";" | t], res), do: {res, t}
+
+  defp parse_definition_string([h | t], res) do
+    parse_definition_string(t, [to_token_format(h) | res])
   end
 
   @doc """
