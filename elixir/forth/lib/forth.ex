@@ -15,21 +15,17 @@ defmodule Forth do
   """
   @spec eval(evaluator, String.t()) :: evaluator
   def eval(ev, s) do
-    s |> tokenize(ev.env) |> IO.inspect()
+    s |> tokenize(ev.env) |> eval_tokens(ev)
   end
 
-  @doc """
-  Splits input string with commands into tokens given into
-  account evaluator's environment
-  """
+  # Splits input string with commands into tokens given into
+  # account evaluator's environment
   defp tokenize(s, env) do
     # clean non-words
     s |> String.replace(~r/[^\w\+-\\*\/]| /, " ") |> String.split() |> proceed_tokens(env)
   end
 
-  @doc """
-  Proceeds tokens one by one
-  """
+  # Proceeds tokens one by one
   defp proceed_tokens([], _), do: []
 
   defp proceed_tokens([token | rest] = s, env) when token == ":" do
@@ -49,18 +45,14 @@ defmodule Forth do
     end
   end
 
-  @doc """
-  Parses string of format ": word-name definition ;"
-  """
+  # Parses string of format ": word-name definition ;"
   defp parse_definition_string([";" | t], res), do: {res, t}
 
   defp parse_definition_string([h | t], res) do
     parse_definition_string(t, [to_token_format(h) | res])
   end
 
-  @doc """
-  Checks if string is an integer
-  """
+  # Checks if string is an integer
   defp is_string_integer?(string) do
     String.match?(string, ~r/^\d+$/)
   end
